@@ -1,6 +1,3 @@
-import sys
-
-
 # Definition for a binary tree node.
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -11,21 +8,23 @@ class TreeNode:
 
 class Solution:
     def goodNodes(self, root: TreeNode) -> int:
-        def _goodNodes(max_ancestor, root) -> int:
-            if not root:
-                return 0
-            if root.val >= max_ancestor:
-                return (
-                    _goodNodes(root.val, root.left)
-                    + _goodNodes(root.val, root.right)
-                    + 1
-                )
-            else:
-                return _goodNodes(max_ancestor, root.left) + _goodNodes(
-                    max_ancestor, root.right
-                )
+        nodes = [(root, float("-inf"))]
 
-        return _goodNodes(float("-inf"), root)
+        num_good_nodes = 0
+        while nodes:
+            node, max_so_far = nodes.pop()
+            if not node:
+                continue
+
+            if node.val >= max_so_far:
+                num_good_nodes += 1
+                nodes.append((node.left, node.val))
+                nodes.append((node.right, node.val))
+            else:
+                nodes.append((node.left, max_so_far))
+                nodes.append((node.right, max_so_far))
+
+        return num_good_nodes
 
 
 n1 = TreeNode(3)
