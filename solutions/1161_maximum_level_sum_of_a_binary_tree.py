@@ -12,33 +12,29 @@ class TreeNode:
 
 class Solution:
     def maxLevelSum(self, root: Optional[TreeNode]) -> int:
-        max = (0, float("-inf"))
+        max = float("-inf")
+        max_level = 0
+        queue = deque([root])
 
-        queue = deque([root, None])
         level = 1
-        sum = 0
         while queue:
-            n = queue.popleft()
-            if not n:
-                if sum > max[1]:
-                    max = (level, sum)
+            sum = 0
+            n_nodes = len(queue)
+            for _ in range(n_nodes):
+                n = queue.popleft()
+                sum += n.val
+                if n.left:
+                    queue.append(n.left)
+                if n.right:
+                    queue.append(n.right)
 
-                if not queue:
-                    break
+            if sum > max:
+                max = sum
+                max_level = level
 
-                queue.append(None)
-                level += 1
-                sum = 0
-                continue
+            level += 1
 
-            sum += n.val
-
-            if n.left:
-                queue.append(n.left)
-            if n.right:
-                queue.append(n.right)
-
-        return max[0]
+        return max_level
 
 
 n2 = TreeNode(2000)
