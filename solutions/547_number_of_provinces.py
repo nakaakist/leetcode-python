@@ -9,28 +9,20 @@ class Solution:
             stack = [start]
             while stack:
                 c = stack.pop()
-                connections = isConnected[c]
-                for i, n in enumerate(connections):
-                    if n == 0:
-                        continue
-                    if not seen[i]:
+                for i in range(len(isConnected)):
+                    if not seen[i] and isConnected[c][i]:
                         seen[i] = True
                         stack.append(i)
 
-        def find_start():
-            try:
-                return seen.index(False)
-            except:
-                return -1
-
         n_provinces = 0
-        while True:
-            start = find_start()
-            if start < 0:
-                return n_provinces
+        for i in range(len(isConnected)):
+            if seen[i]:
+                continue
 
-            visit_all_cities_in_province(start)
+            visit_all_cities_in_province(i)
             n_provinces += 1
+
+        return n_provinces
 
 
 print(Solution().findCircleNum([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
