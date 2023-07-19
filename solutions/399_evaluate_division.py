@@ -6,25 +6,46 @@ class Solution:
     def calcEquation(
         self, equations: List[List[str]], values: List[float], queries: List[List[str]]
     ) -> List[float]:
-        conn_map = defaultdict(lambda: [])
-        for i in range(len(equations)):
-            x, y = equations[i]
-            v = values[i]
-            conn_map[x].append((y, v))
-            conn_map[y].append((x, 1 / v))
+        gid_weight = {}
 
-        def dfs(x, y, curr_val, visited):
-            visited[x] = True
-            if x == y and len(conn_map[x]) > 0:
-                return curr_val
+        def find(node_id):
+            if node_id not in gid_weight:
+                gid_weight[node_id] = (node_id, 1)
+            group_id, node_weight = gid_weight[node_id]
 
-            conns = [c for c in conn_map[x] if not visited[c[0]]]
-            if len(conns) == 0:
-                return -1
+            if group_id != node_id:
+                new_group_id, group_weight = find(group_id)
+                gid_weight[node_id] = (new_group_id, node_weight * group_weight)
 
-            return max([dfs(x2, y, curr_val * v, visited) for x2, v in conns])
+            return gid_weight[node_id]
 
-        return [dfs(x, y, 1, defaultdict(lambda: False)) for [x, y] in queries]
+        def union(dividend, divisor, value):
+            dividend_gid, dividend_weight = find(dividend)
+            divisor_gid, divisor_weight = find(divisor)
+            if dividend_gid != divisor_gid:
+                gid_weight[dividend_gid] = (
+                    divisor_gid,
+                    divisor_weight * value / dividend_weight,
+                )
+
+        for (dividend, divisor), value in zip(equations, values):
+            union(dividend, divisor, value)
+
+        results = []
+        for dividend, divisor in queries:
+            if dividend not in gid_weight or divisor not in gid_weight:
+                results.append(-1.0)
+                continue
+
+            dividend_gid, dividend_weight = find(dividend)
+            divisor_gid, divisor_weight = find(divisor)
+
+            if dividend_gid != divisor_gid:
+                results.append(-1.0)
+            else:
+                results.append(dividend_weight / divisor_weight)
+
+        return results
 
 
 print(
