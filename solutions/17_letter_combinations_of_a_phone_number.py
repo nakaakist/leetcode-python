@@ -1,3 +1,4 @@
+from collections import deque
 from itertools import chain
 from typing import List
 
@@ -18,13 +19,18 @@ class Solution:
         if len(digits) == 0:
             return []
 
-        curr_letters = self.mapping[digits[-1]]
-        if len(digits) == 1:
-            return curr_letters
+        queue = deque(self.mapping[digits[0]])
 
-        prev = self.letterCombinations(digits[:-1])
+        for d in digits[1:]:
+            curr_letters = self.mapping[d]
+            n = len(queue)
 
-        return list(chain.from_iterable([[p + l for p in prev] for l in curr_letters]))
+            for _ in range(n):
+                comb = queue.popleft()
+                for l in curr_letters:
+                    queue.append(comb + l)
+
+        return list(queue)
 
 
 print(Solution().letterCombinations("23"))
