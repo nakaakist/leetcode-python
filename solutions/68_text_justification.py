@@ -3,55 +3,54 @@ from typing import List
 
 class Solution:
     def fullJustify(self, words: List[str], maxWidth: int) -> List[str]:
-        l_start = 0
-        num_chars_in_l = 0
-        result = []
-
-        for i, w in enumerate(words):
-            num_chars_in_l += len(w)
-            should_break_now = num_chars_in_l + (i - l_start) > maxWidth
-            should_end_now = i == len(words) - 1
-            if not should_break_now and not should_end_now:
-                continue
-
-            # calc line
-            if should_break_now:
-                l_end = i - 1
-                num_gaps = l_end - l_start
-
-                if num_gaps == 0:
-                    result.append(
-                        words[l_start] + " " * (maxWidth - len(words[l_start]))
-                    )
+        def get_words_in_line(i):
+            required_length = 0
+            j = i
+            l_words = []
+            for j in range(i, len(words)):
+                w = words[j]
+                required_length += len(w) if i == j else len(w) + 1
+                if required_length <= maxWidth:
+                    l_words.append(w)
                 else:
-                    l_str = ""
-                    for j in range(l_start, l_end + 1):
-                        base_spaces_in_gap, gaps_for_extra_space = divmod(
-                            maxWidth - (num_chars_in_l - len(w)), num_gaps
-                        )
-                        l_str += words[j]
-                        if j == l_end:
-                            break
-                        l_str += " " * base_spaces_in_gap
-                        if j - l_start < gaps_for_extra_space:
-                            l_str += " "
+                    break
 
-                    result.append(l_str)
+            return l_words
 
-                l_start = l_end + 1
-                num_chars_in_l = len(w)
+        def construct_line(l_words, is_end):
+            if is_end:
+                l_str = " ".join(l_words)
+                return l_str + " " * (maxWidth - len(l_str))
 
-            # calc end line
-            if should_end_now:
-                l_str = ""
-                for j in range(l_start, i + 1):
-                    l_str += words[j]
-                    if j < i:
-                        l_str += " "
-                l_str += " " * (maxWidth - len(l_str))
-                result.append(l_str)
+            if len(l_words) == 1:
+                return l_words[0] + " " * (maxWidth - len(l_words[0]))
 
-        return result
+            num_gaps = len(l_words) - 1
+            num_chars = sum([len(w) for w in l_words])
+            base_spaces_in_gap, gaps_for_extra_space = divmod(
+                maxWidth - (num_chars), num_gaps
+            )
+            l_str = ""
+            for i, w in enumerate(l_words):
+                l_str += w
+                if i < len(l_words) - 1:
+                    l_str += " " * base_spaces_in_gap
+                if i < gaps_for_extra_space:
+                    l_str += " "
+
+            return l_str
+
+        result = []
+        i = 0
+        while True:
+            l_words = get_words_in_line(i)
+            i += len(l_words)
+
+            if i == len(words):
+                result.append(construct_line(l_words, True))
+                return result
+            else:
+                result.append(construct_line(l_words, False))
 
 
 print(
