@@ -10,9 +10,8 @@ class Solution:
             if i < 0 or j < 0 or i >= n_rows or j >= n_cols:
                 return 0
             else:
-                return board[i][j]
+                return board[i][j] & 1
 
-        result = [[0] * n_cols for _ in range(n_rows)]
         for i in range(n_rows):
             for j in range(n_cols):
                 neighbors = 0
@@ -23,13 +22,15 @@ class Solution:
                         neighbors += get_cell_val(i + h, j + v)
 
                 if board[i][j] == 1:
-                    result[i][j] = 0 if neighbors < 2 or neighbors > 3 else 1
+                    if neighbors >= 2 and neighbors <= 3:
+                        board[i][j] = 0b11
                 else:
-                    result[i][j] = 1 if neighbors == 3 else 0
+                    if neighbors == 3:
+                        board[i][j] = 0b10
 
         for i in range(n_rows):
             for j in range(n_cols):
-                board[i][j] = result[i][j]
+                board[i][j] = board[i][j] >> 1
 
 
 board = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]]
