@@ -3,27 +3,20 @@ from typing import List
 
 class Solution:
     def summaryRanges(self, nums: List[int]) -> List[str]:
-        if len(nums) == 0:
-            return []
-
         ans = []
-        start = nums[0]
+        i_start = 0
 
-        def flush(start: int, end: int):
-            if start == end:
-                ans.append(str(start))
+        while i_start < len(nums):
+            i_end = i_start
+            while i_end < len(nums) - 1 and nums[i_end + 1] == nums[i_end] + 1:
+                i_end += 1
+
+            if i_start == i_end:
+                ans.append(str(nums[i_start]))
             else:
-                ans.append(f"{start}->{end}")
+                ans.append(f"{nums[i_start]}->{nums[i_end]}")
+            i_start = i_end + 1
 
-        for i in range(1, len(nums)):
-            if nums[i] == nums[i - 1] + 1:
-                continue
-            else:
-                end = nums[i - 1]
-                flush(start, end)
-                start = nums[i]
-
-        flush(start, nums[-1])
         return ans
 
 
