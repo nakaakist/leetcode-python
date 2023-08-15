@@ -1,17 +1,15 @@
 class Solution:
     def calculate(self, s: str) -> int:
-        stack = []
+        s += ")"
+        stack = ["("]
         i = 0
-
-        def is_num(c):
-            return c in "0123456789"
 
         while i < len(s):
             if s[i] in "(+-":
                 stack.append(s[i])
-            elif is_num(s[i]):
+            elif s[i].isdigit():
                 i_start = i
-                while i < len(s) - 1 and is_num(s[i + 1]):
+                while i < len(s) - 1 and s[i + 1].isdigit():
                     i += 1
                 stack.append(int(s[i_start : i + 1]))
             elif s[i] == ")":
@@ -25,13 +23,7 @@ class Solution:
 
             i += 1
 
-        ans = 0
-        while stack:
-            v = stack.pop()
-            op = "+" if not stack else stack.pop()
-            ans += v if op == "+" else -v
-
-        return ans
+        return stack[0]
 
 
 print(Solution().calculate("(1+(4+5+2)-3)+(6+8)"))
