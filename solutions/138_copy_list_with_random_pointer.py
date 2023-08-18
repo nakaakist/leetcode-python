@@ -9,37 +9,35 @@ class Node:
         self.random = random
 
 
-class Solution:
-    def copyRandomList(self, head: "Optional[Node]") -> "Optional[Node]":
-        if head is None:
-            return None
+class Solution(object):
+    def __init__(self):
+        self.visited = {}
 
-        ans_head = Node(head.val)
-        ans_curr = ans_head
-        curr = head
-        ans_nodes = [ans_curr]
-        node_indices = {}
-        node_indices[curr] = 0
-        i = 1
-        while curr.next:
-            curr = curr.next
-            node_indices[curr] = i
-            i += 1
-            ans_curr.next = Node(curr.val)
-            ans_curr = ans_curr.next
-            ans_nodes.append(ans_curr)
+    def getClonedNode(self, node):
+        if node:
+            if node in self.visited:
+                return self.visited[node]
+            else:
+                self.visited[node] = Node(node.val, None, None)
+                return self.visited[node]
+        return None
 
-        curr = head
-        rand_nodes_indices = []
-        while curr:
-            rand_nodes_indices.append(node_indices[curr.random] if curr.random else -1)
-            curr = curr.next
+    def copyRandomList(self, head):
+        if not head:
+            return head
 
-        for i, n in enumerate(ans_nodes):
-            ind = rand_nodes_indices[i]
-            n.random = ans_nodes[ind] if ind >= 0 else None
+        old_node = head
+        new_node = Node(old_node.val, None, None)
+        self.visited[old_node] = new_node
 
-        return ans_head
+        while old_node != None:
+            new_node.random = self.getClonedNode(old_node.random)
+            new_node.next = self.getClonedNode(old_node.next)
+
+            old_node = old_node.next
+            new_node = new_node.next
+
+        return self.visited[head]
 
 
 def make_list(vals: List[int]):
