@@ -14,18 +14,15 @@ class Solution:
 
         curr = head
         non_dup_head = dummy_pre_head
-        prev = dummy_pre_head
         while curr:
-            if not curr.next:
-                if prev.val < curr.val:
-                    non_dup_head.next = curr
-                else:
-                    non_dup_head.next = None
-            elif prev.val < curr.val and curr.val < curr.next.val:
-                non_dup_head.next = curr
-                non_dup_head = curr
+            if curr.next and curr.val == curr.next.val:
+                while curr.next and curr.val == curr.next.val:
+                    curr = curr.next
+                non_dup_head.next = curr.next
+            else:
+                non_dup_head = non_dup_head.next
 
-            prev, curr = curr, curr.next
+            curr = curr.next
 
         return dummy_pre_head.next
 
@@ -50,5 +47,5 @@ def print_list(l: Optional[ListNode]):
 
 
 print_list(Solution().deleteDuplicates(make_list([0, 1, 1, 2, 4, 4])))
-print_list(Solution().deleteDuplicates(make_list([])))
+# print_list(Solution().deleteDuplicates(make_list([])))
 print_list(Solution().deleteDuplicates(make_list([0])))
