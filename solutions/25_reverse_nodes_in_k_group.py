@@ -9,38 +9,28 @@ class ListNode:
 
 
 class Solution:
-    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
-        if k == 1:
-            return head
-
-        def reverse(start: ListNode, end: ListNode):
-            curr = start
-            prev = None
-            while prev != end:
-                next = curr.next
-                curr.next = prev
-                curr, prev = next, curr
-
-        curr = head
-        prev_group_start = None
-        group_start = None
-        i = 0
-        while curr:
+    def reverseLinkedList(self, head, k):
+        prev, curr = None, head
+        while k:
             next = curr.next
-            if (i + 1) % k == 0:
-                if i == k - 1:
-                    head = curr
-                if prev_group_start:
-                    prev_group_start.next = curr
-                reverse(group_start, curr)
-            elif i % k == 0:
-                prev_group_start, group_start = group_start, curr
-                if prev_group_start:
-                    prev_group_start.next = curr
+            curr.next = prev
+            prev, curr = curr, next
+            k -= 1
 
-            curr = next
-            i += 1
+        return prev
 
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        count = 0
+        ptr = head
+
+        while count < k and ptr:
+            ptr = ptr.next
+            count += 1
+
+        if count == k:
+            rev_head = self.reverseLinkedList(head, k)
+            head.next = self.reverseKGroup(ptr, k)
+            return rev_head
         return head
 
 
