@@ -13,31 +13,19 @@ class Solution:
         if head is None:
             return None
 
-        l = 0
-        curr = head
-        while curr:
-            curr = curr.next
+        l = 1
+        tail = head
+        while tail.next:
+            tail = tail.next
             l += 1
-
-        k_rot = k % l
-
-        if k_rot == 0:
-            return head
+        tail.next = head
 
         curr = head
-        rot_head = None
-        i = 0
-        while curr:
-            next = curr.next
-            if i == l - k_rot - 1:
-                curr.next = None
-            if i == l - k_rot:
-                rot_head = curr
-            if i == l - 1:
-                curr.next = head
+        for _ in range(l - k % l - 1):
+            curr = curr.next
 
-            i += 1
-            curr = next
+        rot_head = curr.next
+        curr.next = None
 
         return rot_head
 
