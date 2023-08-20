@@ -11,11 +11,21 @@ class TreeNode:
 
 class Solution:
     def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
-        if p is None or q is None:
-            return p is None and q is None
+        s_p = [p]
+        s_q = [q]
+        while s_p or s_q:
+            n_p = s_p.pop()
+            n_q = s_q.pop()
 
-        return (
-            p.val == q.val
-            and self.isSameTree(p.left, q.left)
-            and self.isSameTree(p.right, q.right)
-        )
+            if n_p is None or n_q is None:
+                if n_p is None and n_q is None:
+                    continue
+                else:
+                    return False
+            elif n_p.val != n_q.val:
+                return False
+
+            s_p.extend([n_p.left, n_p.right])
+            s_q.extend([n_q.left, n_q.right])
+
+        return True
