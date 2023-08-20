@@ -14,6 +14,13 @@ class Solution:
         if not root:
             return root
 
-        root.left, root.right = self.invertTree(root.right), self.invertTree(root.left)
+        stack = [root]
+        while stack:
+            n = stack.pop()
+            n.left, n.right = n.right, n.left
+            if n.left:
+                stack.append(n.left)
+            if n.right:
+                stack.append(n.right)
 
         return root
