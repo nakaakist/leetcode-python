@@ -1,7 +1,8 @@
 class ListNode:
-    def __init__(self, key, val, next=None):
+    def __init__(self, key, val, prev=None, next=None):
         self.key = key
         self.val = val
+        self.prev = prev
         self.next = next
 
 
@@ -10,33 +11,37 @@ class LRUCache:
         if key not in self.pointers:
             return -1
 
-        before, curr, after = self.pointers[key]
-        before.next = after
+        node = self.pointers[key]
         del self.pointers[key]
-        self.pointers[before.key][2] = after
-        if after is None:
-            self.queue_tail = before
-        else:
-            self.pointers[after.key][0] = before
 
-        return curr.val
+        prev = node.prev
+        next = node.next
+        if prev:
+            prev.next = next
+        else:
+            self.queue_head = next
+        if next:
+            next.prev = prev
+        else:
+            self.queue_tail = prev
+
+        return node.val
 
     def _append(self, key, val):
-        node = ListNode(key, val, None)
-        self.queue_tail.next = node
+        node = ListNode(key, val, self.queue_tail, None)
+        self.pointers[key] = node
 
-        self.pointers[key] = [self.queue_tail, node, None]
-        self.pointers[self.queue_tail.key][2] = node
-
+        if self.queue_tail:
+            self.queue_tail.next = node
+        if not self.queue_head:
+            self.queue_head = node
         self.queue_tail = node
 
     def __init__(self, capacity: int):
         self.capacity = capacity
-        sentinel = ListNode(float("-inf"), None)
-        self.queue_head = sentinel
-        self.queue_tail = sentinel
+        self.queue_head = None
+        self.queue_tail = None
         self.pointers = {}
-        self.pointers[float("-inf")] = [None, sentinel, None]
 
     def get(self, key: int) -> int:
         val = self._remove(key)
@@ -50,8 +55,8 @@ class LRUCache:
         self._remove(key)
         self._append(key, value)
 
-        if len(self.pointers) > self.capacity + 1:
-            self._remove(self.queue_head.next.key)
+        if len(self.pointers) > self.capacity:
+            self._remove(self.queue_head.key)
 
 
 # # Your LRUCache object will be instantiated and called as such:
