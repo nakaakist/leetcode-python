@@ -16,21 +16,17 @@ class Solution:
             return []
 
         result = []
-        queue = deque([root, None])
-        curr = None
+        queue = deque([root])
         while queue:
-            prev, curr = curr, queue.popleft()
-            if not curr:
-                if not prev:
-                    break
-                result.append(prev.val)
-                queue.append(None)
-                continue
-
-            if curr.left:
-                queue.append(curr.left)
-            if curr.right:
-                queue.append(curr.right)
+            queue.append(None)  # add sentinel
+            while queue[0] is not None:
+                n = queue.popleft()
+                if n.left:
+                    queue.append(n.left)
+                if n.right:
+                    queue.append(n.right)
+            result.append(n.val)
+            queue.popleft()  # remove sentinel
 
         return result
 
