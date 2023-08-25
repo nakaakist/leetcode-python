@@ -15,20 +15,15 @@ class Solution:
             return 0
 
         def max_level(n: Optional[TreeNode]):
-            if n is None:
-                return 0
-
-            l = 1
-            while n.left:
+            l = 0
+            while n:
                 n = n.left
                 l += 1
-
             return l
 
-        ll = max_level(root.left)
-        lr = max_level(root.right)
+        ll, lr = max_level(root.left), max_level(root.right)
 
         if ll == lr:
-            return 1 + (2**ll - 1) + self.countNodes(root.right)
+            return 2**ll + self.countNodes(root.right)
         else:
-            return 1 + self.countNodes(root.left) + (2**lr - 1)
+            return self.countNodes(root.left) + 2**lr
