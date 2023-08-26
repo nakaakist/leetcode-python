@@ -10,20 +10,21 @@ class TreeNode:
 
 
 class Solution:
-    INF = 10**9
-
     def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
-        def process(n: Optional[TreeNode]) -> (int, int, int):  # max, min, min_diff
+        ans = float("inf")
+        prevNode = None
+
+        def inorder(n: Optional[TreeNode]):
+            nonlocal ans, prevNode
             if not n:
-                return -self.INF, self.INF, self.INF
+                return
 
-            l_max, l_min, l_min_diff = process(n.left)
-            r_max, r_min, r_min_diff = process(n.right)
+            inorder(n.left)
+            if prevNode:
+                ans = min(ans, n.val - prevNode.val)
+            prevNode = n
+            inorder(n.right)
 
-            return (
-                max(l_max, n.val, r_max),
-                min(l_min, n.val, r_min),
-                min(l_min_diff, r_min_diff, abs(n.val - l_max), abs(n.val - r_min)),
-            )
+        inorder(root)
 
-        return process(root)[2]
+        return ans
