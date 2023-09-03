@@ -16,7 +16,7 @@ class Solution:
         n_row = len(board)
         n_col = len(board[0])
         visited = [[False] * n_col for _ in range(n_row)]
-        result = set()
+        result = []
 
         def dfs(i, j, curr_trie, s):
             nonlocal result, visited
@@ -29,7 +29,8 @@ class Solution:
             next_trie = curr_trie[cb]
 
             if SENTINEL in next_trie:
-                result.add(next_s)
+                del next_trie[SENTINEL]
+                result.append(next_s)
 
             for dv, dh in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 v, h = i + dv, j + dh
@@ -38,11 +39,14 @@ class Solution:
                 dfs(v, h, next_trie, next_s)
             visited[i][j] = False
 
+            if not next_trie:
+                del curr_trie[cb]
+
         for i in range(n_row):
             for j in range(n_col):
                 dfs(i, j, trie, "")
 
-        return list(result)
+        return result
 
 
 print(
