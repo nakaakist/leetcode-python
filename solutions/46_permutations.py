@@ -5,15 +5,17 @@ class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
         result = []
 
-        def backtracking(curr, remain):
+        def backtracking(curr):
             if len(curr) == len(nums):
                 result.append(curr[:])
                 return
-            for i, n in enumerate(remain):
+            for n in nums:
+                if n in curr:
+                    continue
                 curr.append(n)
-                backtracking(curr, remain[:i] + remain[i + 1 :])
+                backtracking(curr)
                 curr.pop()
 
-        backtracking([], nums)
+        backtracking([])
 
         return result
