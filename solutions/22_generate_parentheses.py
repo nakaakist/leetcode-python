@@ -4,18 +4,18 @@ from typing import List
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
         ans = []
+        stack = [("", 0, 0)]
 
-        def dfs(s: str, n_open: int, n_close: int):
+        while stack:
+            s, n_open, n_close = stack.pop()
             if n_open == n and n_close == n:
                 ans.append(s)
-                return
+                continue
 
             if n_open < n:
-                dfs(s + "(", n_open + 1, n_close)
+                stack.append((s + "(", n_open + 1, n_close))
             if n_close < n_open:
-                dfs(s + ")", n_open, n_close + 1)
-
-        dfs("", 0, 0)
+                stack.append((s + ")", n_open, n_close + 1))
 
         return ans
 
