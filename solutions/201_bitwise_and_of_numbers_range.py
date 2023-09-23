@@ -3,14 +3,14 @@ class Solution:
         ans = 0
         cnt = right
 
-        i = 1
+        base = 1
         while cnt > 0:
-            dl, ml = divmod(left, 2**i)
-            dr, mr = divmod(right, 2**i)
-            if dl == dr and (ml >= 2 ** (i - 1) and mr >= 2 ** (i - 1)):
-                ans |= 2 ** (i - 1)
+            dl, ml = divmod(left, 2 * base)
+            dr, mr = divmod(right, 2 * base)
+            if dl == dr and (ml >= base and mr >= base):
+                ans |= base
             cnt >>= 1
-            i += 1
+            base *= 2
 
         return ans
 
