@@ -10,8 +10,9 @@ class Solution:
         odd_candidates = deque(range(len(s)))
         even_candidates = deque(range(len(s) - 1))
 
-        len_p = 1
+        len_p = 0
         while odd_candidates:
+            len_p += 1
             longest_odd_cand = odd_candidates[0]
             odd_candidates.append(SENTINEL)
             while odd_candidates[0] is not SENTINEL:
@@ -23,11 +24,11 @@ class Solution:
                     continue
                 odd_candidates.append(i_center)
             odd_candidates.popleft()
-            len_p += 1
-        longest_odd = s[longest_odd_cand - len_p + 2 : longest_odd_cand + len_p - 1]
+        longest_odd = s[longest_odd_cand - len_p + 1 : longest_odd_cand + len_p]
 
-        len_p = 1
+        len_p = 0
         while even_candidates:
+            len_p += 1
             longest_even_cand = even_candidates[0]
             even_candidates.append(SENTINEL)
             while even_candidates[0] is not SENTINEL:
@@ -39,8 +40,7 @@ class Solution:
                     continue
                 even_candidates.append(i_center)
             even_candidates.popleft()
-            len_p += 1
-        longest_even = s[longest_even_cand - len_p + 3 : longest_even_cand + len_p - 1]
+        longest_even = s[longest_even_cand - len_p + 2 : longest_even_cand + len_p]
 
         return longest_even if len(longest_even) > len(longest_odd) else longest_odd
 
